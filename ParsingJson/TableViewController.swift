@@ -11,7 +11,8 @@ import Alamofire
 
 class TableViewController: UITableViewController {
 
-    var repositories = [Repository]()
+    lazy var repositories = Array<Repositories>()
+    
     
     
     
@@ -27,12 +28,13 @@ class TableViewController: UITableViewController {
                 if response.result.isSuccess {
                     
                     do{
-                        let myResponse = try JSONDecoder().decode(Repository.self, from: response.data!)
-                        self.repositories = [myResponse]
-                    }
-                    catch{
+                        let myResponse = try JSONDecoder().decode(Container.self, from: response.data!)
                         
+                        print(myResponse.items![0])
+                        self.repositories = myResponse.items!
+                        self.tableView.reloadData()
                     }
+                    catch{}
                 }
             }
         }
@@ -44,9 +46,10 @@ class TableViewController: UITableViewController {
         return repositories.count
     }
 
-    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myCell", for: indexPath)
+        
+        print(repositories[indexPath.row].name)
 
         cell.textLabel?.text = repositories[indexPath.row].name
         cell.detailTextLabel?.text = repositories[indexPath.row].description
