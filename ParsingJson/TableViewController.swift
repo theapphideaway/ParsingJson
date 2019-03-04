@@ -18,30 +18,27 @@ class TableViewController: UITableViewController {
         super.viewDidLoad()
         let reposURL = "https://api.github.com/search/repositories?q=learn+swift+language:swift&sort=stars&order=desc"
 
-        DispatchQueue.main.async {
-        
-            Alamofire.request(reposURL, method: .get).responseJSON {
-                response in
-                if response.result.isSuccess {
+        Alamofire.request(reposURL, method: .get).responseJSON {
+            response in
+            if response.result.isSuccess {
+                
+                guard let data = response.data else {return}
+                
+                do{
+                    let myResponse = try JSONDecoder().decode(Container.self, from: data)
                     
-                    guard let data = response.data else {return}
+                    print(myResponse.items[0] as Any)
                     
-                    do{
-                        let myResponse = try JSONDecoder().decode(Container.self, from: data)
-                        
-                        print(myResponse.items[0] as Any)
-                        
-                        self.repositories = (myResponse.items)
-                        self.tableView.reloadData()
-                        
-                    }
-                    catch{}
+                    self.repositories = (myResponse.items)
+                    self.tableView.reloadData()
                     
                 }
+                catch{}
+                
             }
         }
+        
     }
-
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -58,7 +55,4 @@ class TableViewController: UITableViewController {
 
         return cell
     }
- 
-
-
 }
