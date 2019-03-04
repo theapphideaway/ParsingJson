@@ -7,5 +7,5 @@
 //
 
 class Container: Decodable {
-    var items: Array<Repositories>?
+    var items: Array<Repositories>
 }

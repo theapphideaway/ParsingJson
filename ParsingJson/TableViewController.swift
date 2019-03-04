@@ -9,32 +9,34 @@
 import UIKit
 import Alamofire
 
+
 class TableViewController: UITableViewController {
 
-    lazy var repositories = Array<Repositories>()
-    
-    
-    
+    var repositories = Array<Repositories>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let reposURL = "https://api.github.com/search/repositories?q=learn+swift+language:swift&sort=stars&order=desc"
 
-        
         DispatchQueue.main.async {
         
             Alamofire.request(reposURL, method: .get).responseJSON {
                 response in
                 if response.result.isSuccess {
                     
+                    guard let data = response.data else {return}
+                    
                     do{
-                        let myResponse = try JSONDecoder().decode(Container.self, from: response.data!)
+                        let myResponse = try JSONDecoder().decode(Container.self, from: data)
                         
-                        print(myResponse.items![0])
-                        self.repositories = myResponse.items!
+                        print(myResponse.items[0] as Any)
+                        
+                        self.repositories = (myResponse.items)
                         self.tableView.reloadData()
+                        
                     }
                     catch{}
+                    
                 }
             }
         }
