@@ -18,7 +18,7 @@ class TableViewController: UITableViewController {
         super.viewDidLoad()
         let reposURL = "https://api.github.com/search/repositories?q=learn+swift+language:swift&sort=stars&order=desc"
 
-        Alamofire.request(reposURL, method: .get).responseJSON {
+        Alamofire.request(reposURL, method: .get).responseJSON { [weak self]
             response in
             if response.result.isSuccess {
                 
@@ -29,8 +29,10 @@ class TableViewController: UITableViewController {
                     
                     print(myResponse.items[0] as Any)
                     
-                    self.repositories = (myResponse.items)
-                    self.tableView.reloadData()
+                    self?.repositories = (myResponse.items)
+                    
+                    
+                    self?.tableView.reloadData()
                     
                 }
                 catch{}
